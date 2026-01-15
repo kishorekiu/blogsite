@@ -6,27 +6,62 @@ export interface FormProps {
   formData: {
     title: string;
     cta: string;
-    feilds: FormDatFeilds[];
+    feilds: FormDataFeilds[];
   };
   showPassword?: boolean;
   setShowPassword?: React.Dispatch<React.SetStateAction<boolean>>;
   handleFormSubmit: (inputs: any) => void;
+  apiResponse?: {
+    message?: string;
+    error?: string;
+  };
 }
-export interface FormDatFeilds {
-  type: string;
+export interface FormDataFeilds {
   label: string;
-  name: string;
-  id: string;
-  placeholder: string;
-  htmlFor: string;
+  input: {
+    type: string;
+    name: string;
+    id: string;
+    placeholder: string;
+    htmlFor: string;
+  };
+  error: {
+    required: string;
+  };
 }
 const Form = (props: FormProps) => {
   const { formData, showPassword, setShowPassword, handleFormSubmit } = props;
-  const [inputs, setInputs] = useState({});
+  const [inputs, setInputs] = useState<{ [key: string]: string }>();
+  const [errors, setErrors] = useState<{ [key: string]: string }>();
   const handleOnChange = (e: any) => {
     const name = e.target.name;
     const value = e.target.value;
     setInputs((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
+  };
+  const handleOnFormSubmit = (e: any) => {
+    e.preventDefault();
+    const newErrors: { [key: string]: string } = {};
+    formData.feilds.forEach((feild) => {
+      const { input, error } = feild;
+      if (input && error) {
+        if (!input.name) {
+          return;
+        }
+        if (!inputs?.[input.name]) {
+          newErrors[input.name] = error.required;
+        } else if (input.type === "email") {
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(inputs[input.name])) {
+            newErrors[input.name] = "Please enter a valid email address";
+          }
+        }
+      }
+    });
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length === 0) {
+      handleFormSubmit(inputs);
+    }
   };
 
   return (
@@ -35,21 +70,35 @@ const Form = (props: FormProps) => {
         <div className="flex justify-center mb-2">
           <p className="text-3xl font-bold text-blue-400">{formData.title}</p>
         </div>
-        {formData.feilds.map((feild: FormDatFeilds, index: number) => (
+        <div>
+          {props?.apiResponse?.message && (
+            <p className="text-green-500 text-center">
+              {props.apiResponse.message}
+            </p>
+          )}
+          {props?.apiResponse?.error && (
+            <p className="text-red-500 text-center">
+              {props.apiResponse.error}
+            </p>
+          )}
+        </div>
+        {formData.feilds.map((feild: FormDataFeilds, index: number) => (
           <div key={index} className="flex flex-col w-full">
-            <label htmlFor={feild.htmlFor} className="font-bold">
+            <label htmlFor={feild?.input?.htmlFor} className="font-bold">
               {feild.label}
             </label>
             <div className="relative">
+              {/* input field */}
               <input
-                {...feild}
-                {...(feild.type === "password" && {
+                {...feild?.input}
+                {...(feild?.input?.type === "password" && {
                   type: showPassword ? "text" : "password",
                 })}
                 onChange={handleOnChange}
                 className="text-black p-2 w-full border border-gray-200 bg-white rounded-xl"
               />
-              {feild.type === "password" && (
+              {/* password show/hide icon */}
+              {feild?.input?.type === "password" && (
                 <button
                   type="button"
                   onClick={() =>
@@ -60,12 +109,16 @@ const Form = (props: FormProps) => {
                   {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                 </button>
               )}
+              {/* Error message*/}
+              {feild?.input?.name && errors?.[feild?.input?.name] && (
+                <p className="text-red-500">{errors?.[feild?.input?.name]}</p>
+              )}
             </div>
           </div>
         ))}
         <div className="mt-2 flex justify-center">
           <button
-            onClick={() => handleFormSubmit(inputs)}
+            onClick={handleOnFormSubmit}
             className="border font-bold hover:text-white text-lggg border-gray-400 rounded-xl py-2 px-3 cursor-pointer hover:bg-blue-300 bg-gray-300 text-grey-500"
           >
             {formData.cta}

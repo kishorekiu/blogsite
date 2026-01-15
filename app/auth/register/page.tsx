@@ -6,45 +6,60 @@ import Form from "@/components/Form";
 
 const formData = {
   title: "Sign Up",
-  cta: "Register",
+  cta: "Sign Up",
   feilds: [
     {
-      type: "text",
       label: "Username",
-      name: "username",
-      id: "username",
-      placeholder: "Enter username",
-      htmlFor: "username",
+      input: {
+        type: "text",
+        name: "username",
+        id: "username",
+        placeholder: "Enter username",
+        htmlFor: "username",
+      },
+      error: {
+        required: "Username is required",
+      },
     },
     {
-      type: "email",
       label: "Email",
-      name: "email",
-      id: "email",
-      placeholder: "Enter email",
-      htmlFor: "email",
+      input: {
+        type: "email",
+        name: "email",
+        id: "email",
+        placeholder: "Enter email",
+        htmlFor: "email",
+      },
+      error: {
+        required: "Email is required",
+      },
     },
     {
-      type: "password",
       label: "Password",
-      name: "password",
-      id: "password",
-      placeholder: "Enter password",
-      htmlFor: "password",
+      input: {
+        type: "password",
+        name: "password",
+        id: "password",
+        placeholder: "Enter password",
+        htmlFor: "password",
+      },
+      error: {
+        required: "Password is required",
+      },
     },
   ],
 };
 
-const page = () => {
+const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [apiResponse, setApiResponse] = useState({
+    message: "",
+    error: "",
+  });
   const handleFormSubmit = async (inputs: any) => {
     console.log(inputs);
     // Handle form submission logic here
     const { username, email, password } = inputs;
-    if (!username || !email || !password) {
-      // handle error handling
-      console.log("full data not entered");
-    }
     try {
       const response = await fetch("/api/auth/register", {
         method: "POST",
@@ -53,6 +68,15 @@ const page = () => {
         },
         body: JSON.stringify({ username, email, password }),
       });
+      console.log("response", response);
+
+      const data = await response.json();
+      setApiResponse(data);
+      console.log("kiss", data);
+      if (response.ok) {
+        // redirect to login - /auth/login
+        window.location.href = "/auth/login";
+      }
     } catch (error) {
       console.log(error);
     }
@@ -64,8 +88,9 @@ const page = () => {
       showPassword={showPassword}
       setShowPassword={setShowPassword}
       handleFormSubmit={handleFormSubmit}
+      apiResponse={apiResponse}
     />
   );
 };
 
-export default page;
+export default RegisterPage;
