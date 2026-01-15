@@ -46,3 +46,37 @@ export const PUT = async (
     );
   }
 };
+
+// DELETE - Delete a blog - dynamic route - blogs/id
+export const DELETE = async (
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) => {
+  try {
+    const blogId = (await params).id;
+    const userId = await getDataFromToken();
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    await dbConnect();
+    // @ts-ignore
+    const blog: IBlog = await Blog.findById(blogId);
+    if (!blog) {
+      return NextResponse.json({ error: "Blog not found" }, { status: 404 });
+    }
+    if (blog.author.toString() !== userId) {
+      return NextResponse.json(
+        { error: "you can only delete your own blog" },
+        { status: 403 }
+      );
+    }
+    await Blog.findByIdAndDelete(blogId);
+    return NextResponse.json({ message: "blog deleted" }, { status: 201 });
+  } catch (e) {
+    return NextResponse.json(
+      { error: "Internal server error while Deleting a Blog" },
+      { status: 500 }
+    );
+  }
+};
