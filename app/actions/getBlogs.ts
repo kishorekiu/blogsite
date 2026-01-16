@@ -3,7 +3,7 @@ import Blog, { IBlog } from "@/models/Blog";
 
 export const getBlogs = async () => {
   try {
-    dbConnect();
+    await dbConnect();
     const blogs: IBlog[] = await Blog.find({})
       .populate("author", "username email")
       .sort({ createdAt: -1 })
