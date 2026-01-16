@@ -3,6 +3,9 @@ import React, { useState } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import Form from "@/components/Form";
+import { useAppDispatch } from "@/lib/hooks";
+import { login } from "@/lib/features/auth/authSlice";
+import { useRouter } from "next/navigation";
 
 const formData = {
   title: "Sign In",
@@ -38,6 +41,8 @@ const formData = {
 };
 
 const LoginPage = () => {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [apiResponse, setApiResponse] = useState({
     message: "",
@@ -61,8 +66,8 @@ const LoginPage = () => {
       setApiResponse(data);
       console.log("kiss", data);
       if (response.ok) {
-        // redirect to home - /
-        window.location.href = "/";
+        dispatch(login());
+        router.push("/");
       }
     } catch (error) {
       console.log(error);

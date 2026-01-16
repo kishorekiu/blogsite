@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 // @ts-ignore
 import "./globals.css";
 import NavBar from "@/components/NavBar";
+import StoreProvider from "@/app/StoreProvider";
+import { getDataFromToken } from "@/lib/auth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,18 +22,21 @@ export const metadata: Metadata = {
     "This is a blog site application built on NextJS App Router to share all developers experiences on their daily basis",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const isAuth = await getDataFromToken();
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <NavBar />
-        <div className="mx-44">{children}</div>
+        <StoreProvider isAuth={isAuth}>
+          <NavBar />
+          <div className="mx-44">{children}</div>
+        </StoreProvider>
       </body>
     </html>
   );

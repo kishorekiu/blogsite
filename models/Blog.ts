@@ -3,7 +3,9 @@ import mongoose, { Document, Model, Schema } from "mongoose";
 export interface IBlog extends Document {
   title: string;
   description: string;
-  author: mongoose.Types.ObjectId;
+  author: mongoose.Types.ObjectId | any;
+  createdAt: Date;
+  updatedAt: Date;
   slug: string;
 }
 
