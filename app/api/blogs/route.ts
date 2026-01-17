@@ -1,6 +1,7 @@
 import { getDataFromToken } from "@/lib/auth";
 import dbConnect from "@/lib/dbConnect";
 import Blog, { IBlog } from "@/models/Blog";
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
 export const GET = async (request: Request) => {
@@ -14,7 +15,7 @@ export const GET = async (request: Request) => {
   } catch (e) {
     return NextResponse.json(
       { error: "Internal server error Blogs route" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 };
@@ -41,11 +42,13 @@ export const POST = async (request: Request) => {
       author: userId,
     });
 
+    revalidatePath("/blogs");
+
     return NextResponse.json(newBlog, { status: 201 });
   } catch (e) {
     return NextResponse.json(
       { error: "Error Creating Blog", e },
-      { status: 500 }
+      { status: 500 },
     );
   }
 };

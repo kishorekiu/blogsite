@@ -5,7 +5,7 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import Form from "@/components/Form";
 import { useAppDispatch } from "@/lib/hooks";
 import { login } from "@/lib/features/auth/authSlice";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const formData = {
   title: "Sign In",
@@ -44,13 +44,17 @@ const LoginPage = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [apiResponse, setApiResponse] = useState({
     message: "",
     error: "",
   });
+  const searchParams = useSearchParams();
+  const redirectTarget = searchParams.get("from") || "/";
+  console.log("redirectTarge", redirectTarget);
+
   const handleFormSubmit = async (inputs: any) => {
-    console.log(inputs);
-    // Handle form submission logic here
+    setLoading(true);
     const { email, password } = inputs;
     try {
       const response = await fetch("/api/auth/login", {
@@ -60,17 +64,16 @@ const LoginPage = () => {
         },
         body: JSON.stringify({ email, password }),
       });
-      console.log("response", response);
-
       const data = await response.json();
       setApiResponse(data);
-      console.log("kiss", data);
       if (response.ok) {
         dispatch(login());
-        router.push("/");
+        router.push(redirectTarget);
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -81,6 +84,7 @@ const LoginPage = () => {
       setShowPassword={setShowPassword}
       handleFormSubmit={handleFormSubmit}
       apiResponse={apiResponse}
+      isLoading={loading}
     />
   );
 };

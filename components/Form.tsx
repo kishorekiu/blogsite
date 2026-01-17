@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
@@ -10,11 +11,12 @@ export interface FormProps {
   };
   showPassword?: boolean;
   setShowPassword?: React.Dispatch<React.SetStateAction<boolean>>;
-  handleFormSubmit: (inputs: any) => void;
+  handleFormSubmit?: (inputs: any) => void;
   apiResponse?: {
     message?: string;
     error?: string;
   };
+  isLoading?: boolean;
 }
 export interface FormDataFeilds {
   label: string;
@@ -24,14 +26,26 @@ export interface FormDataFeilds {
     id: string;
     placeholder: string;
     htmlFor: string;
+    defaultValue?: string;
   };
   error: {
     required: string;
   };
 }
 const Form = (props: FormProps) => {
-  const { formData, showPassword, setShowPassword, handleFormSubmit } = props;
-  const [inputs, setInputs] = useState<{ [key: string]: string }>();
+  const {
+    formData,
+    showPassword,
+    setShowPassword,
+    handleFormSubmit,
+    isLoading,
+  } = props;
+  const [inputs, setInputs] = useState<{ [key: string]: string }>(
+    formData?.feilds?.reduce((acc: { [key: string]: string }, feild) => {
+      acc[feild.input.name] = feild.input.defaultValue || "";
+      return acc;
+    }, {}),
+  );
   const [errors, setErrors] = useState<{ [key: string]: string }>();
   const handleOnChange = (e: any) => {
     const name = e.target.name;
@@ -60,7 +74,7 @@ const Form = (props: FormProps) => {
     });
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {
-      handleFormSubmit(inputs);
+      handleFormSubmit && handleFormSubmit(inputs);
     }
   };
 
@@ -89,14 +103,23 @@ const Form = (props: FormProps) => {
             </label>
             <div className="relative">
               {/* input field */}
-              <input
-                {...feild?.input}
-                {...(feild?.input?.type === "password" && {
-                  type: showPassword ? "text" : "password",
-                })}
-                onChange={handleOnChange}
-                className="text-black p-2 w-full border border-gray-200 bg-white rounded-xl"
-              />
+              {feild?.input?.type === "textarea" ? (
+                <textarea
+                  {...feild?.input}
+                  rows={6}
+                  onChange={handleOnChange}
+                  className="text-black p-2 w-full border-gray-200 bg-white rounded-xl resize-none"
+                />
+              ) : (
+                <input
+                  {...feild?.input}
+                  {...(feild?.input?.type === "password" && {
+                    type: showPassword ? "text" : "password",
+                  })}
+                  onChange={handleOnChange}
+                  className="text-black p-2 w-full border border-gray-200 bg-white rounded-xl"
+                />
+              )}
               {/* password show/hide icon */}
               {feild?.input?.type === "password" && (
                 <button
@@ -119,7 +142,14 @@ const Form = (props: FormProps) => {
         <div className="mt-2 flex justify-center">
           <button
             onClick={handleOnFormSubmit}
-            className="border font-bold hover:text-white text-lggg border-gray-400 rounded-xl py-2 px-3 cursor-pointer hover:bg-blue-300 bg-gray-300 text-grey-500"
+            className={`
+              border font-bold  text-lggg border-gray-400 rounded-xl py-2 px-3
+              ${
+                isLoading
+                  ? "cursor-not-allowed opacity-60 bg-gray-200 text-gray-400"
+                  : "cursor-pointer hover:text-white hover:bg-blue-300 bg-gray-300 text-grey-500"
+              }
+            `}
           >
             {formData.cta}
           </button>

@@ -1,8 +1,10 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import authReducer from "@/lib/features/auth/authSlice";
+import blogReducer from "@/lib/features/blog/blogSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  blog: blogReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

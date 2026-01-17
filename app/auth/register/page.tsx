@@ -52,11 +52,13 @@ const formData = {
 const RegisterPage = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [apiResponse, setApiResponse] = useState({
     message: "",
     error: "",
   });
   const handleFormSubmit = async (inputs: any) => {
+    setLoading(true);
     const { username, email, password } = inputs;
     try {
       const response = await fetch("/api/auth/register", {
@@ -76,6 +78,8 @@ const RegisterPage = () => {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -86,6 +90,7 @@ const RegisterPage = () => {
       setShowPassword={setShowPassword}
       handleFormSubmit={handleFormSubmit}
       apiResponse={apiResponse}
+      isLoading={loading}
     />
   );
 };
