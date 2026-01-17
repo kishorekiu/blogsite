@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import Form from "@/components/Form";
@@ -40,7 +40,7 @@ const formData = {
   ],
 };
 
-const LoginPage = () => {
+const LoginContent = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
@@ -86,6 +86,14 @@ const LoginPage = () => {
       apiResponse={apiResponse}
       isLoading={loading}
     />
+  );
+};
+
+const LoginPage = () => {
+  return (
+    <Suspense fallback={<div>loading login...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 };
 
