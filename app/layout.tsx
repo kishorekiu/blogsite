@@ -36,7 +36,7 @@ export default async function RootLayout({
       >
         <StoreProvider isAuth={isAuth}>
           <NavBar />
-          <div className="mx-44">{children}</div>
+          <div className="md:mx-16 lg:mx-44">{children}</div>
           <RenderSnackbar />
         </StoreProvider>
       </body>

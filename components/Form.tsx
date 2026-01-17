@@ -89,8 +89,8 @@ const Form = (props: FormProps) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      <div className="flex flex-col gap-2 border border-gray-200 rounded-xl p-5 my-5 mx-10 w-120 bg-gray-50">
+    <div className="flex flex-col items-center justify-center m-3">
+      <div className="flex flex-col gap-2 border border-gray-200 rounded-xl p-5 my-5 mx-10 w-full lg:w-120 bg-gray-50">
         <div className="flex justify-center mb-2">
           <p className="text-3xl font-bold text-blue-400">{formData.title}</p>
         </div>

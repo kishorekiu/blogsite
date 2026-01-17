@@ -41,7 +41,9 @@ const AuthLinks = (props: AuthLinksProps) => {
       </div>
       <div className="flex align-middle border rounded-full py-2 px-3 cursor-pointer hover:bg-gray-200">
         <AccountBoxIcon />
-        <Link href={profile?.href || ""}>{profile?.name}</Link>
+        <Link className="hidden sm:inline ml-2" href={profile?.href || ""}>
+          {profile?.name}
+        </Link>
       </div>
     </div>
   );
