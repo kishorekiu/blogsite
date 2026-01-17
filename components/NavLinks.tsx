@@ -1,6 +1,5 @@
 "use client";
 import { useAppSelector } from "@/lib/hooks";
-import React from "react";
 import AuthLinks from "./AuthLinks";
 import UnAuthLinks from "./UnAuthLinks";
 
@@ -15,7 +14,6 @@ const navLinks = {
 
 const NavLinks = () => {
   const isAuth = useAppSelector((state) => state.auth.isAuth);
-  console.log(isAuth);
   return (
     <div>
       {isAuth ? (

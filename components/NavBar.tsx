@@ -1,9 +1,4 @@
-import { getDataFromToken } from "@/lib/auth";
 import Link from "next/link";
-import React from "react";
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
-import AuthLinks from "./AuthLinks";
-import UnAuthLinks from "./UnAuthLinks";
 import NavLinks from "./NavLinks";
 
 const NavBar = async () => {

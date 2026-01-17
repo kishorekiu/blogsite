@@ -1,4 +1,5 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
+import "@/models/User";
 
 export interface IBlog extends Document {
   title: string;
@@ -20,7 +21,7 @@ const BlogSchema: Schema = new Schema(
     },
     slug: { type: String, required: true, unique: true },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const Blog: Model<IBlog> =

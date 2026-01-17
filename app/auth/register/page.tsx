@@ -1,8 +1,7 @@
 "use client";
-import React, { useState } from "react";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { useState } from "react";
 import Form from "@/components/Form";
+import { useRouter } from "next/navigation";
 
 const formData = {
   title: "Sign Up",
@@ -51,14 +50,13 @@ const formData = {
 };
 
 const RegisterPage = () => {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [apiResponse, setApiResponse] = useState({
     message: "",
     error: "",
   });
   const handleFormSubmit = async (inputs: any) => {
-    console.log(inputs);
-    // Handle form submission logic here
     const { username, email, password } = inputs;
     try {
       const response = await fetch("/api/auth/register", {
@@ -74,8 +72,7 @@ const RegisterPage = () => {
       setApiResponse(data);
       console.log("kiss", data);
       if (response.ok) {
-        // redirect to login - /auth/login
-        window.location.href = "/auth/login";
+        router.push("/auth/login");
       }
     } catch (error) {
       console.log(error);
