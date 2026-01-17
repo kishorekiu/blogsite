@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
@@ -40,12 +40,22 @@ const Form = (props: FormProps) => {
     handleFormSubmit,
     isLoading,
   } = props;
-  const [inputs, setInputs] = useState<{ [key: string]: string }>(
-    formData?.feilds?.reduce((acc: { [key: string]: string }, feild) => {
-      acc[feild.input.name] = feild.input.defaultValue || "";
-      return acc;
-    }, {}),
-  );
+  const [inputs, setInputs] = useState<{ [key: string]: string }>();
+
+  useEffect(() => {
+    const initialValues: { [key: string]: string } = {};
+    formData.feilds.forEach((field) => {
+      // If a defaultValue exists in the prop, set it in the state immediately
+      if (field.input.defaultValue) {
+        initialValues[field.input.name] = field.input.defaultValue;
+      }
+    });
+    console.log("initialValues", initialValues);
+    setInputs(initialValues);
+  }, [formData]);
+  console.log("inputs", inputs);
+  console.log("formData", formData);
+
   const [errors, setErrors] = useState<{ [key: string]: string }>();
   const handleOnChange = (e: any) => {
     const name = e.target.name;
@@ -96,49 +106,54 @@ const Form = (props: FormProps) => {
             </p>
           )}
         </div>
-        {formData.feilds.map((feild: FormDataFeilds, index: number) => (
-          <div key={index} className="flex flex-col w-full">
-            <label htmlFor={feild?.input?.htmlFor} className="font-bold">
-              {feild.label}
-            </label>
-            <div className="relative">
-              {/* input field */}
-              {feild?.input?.type === "textarea" ? (
-                <textarea
-                  {...feild?.input}
-                  rows={6}
-                  onChange={handleOnChange}
-                  className="text-black p-2 w-full border-gray-200 bg-white rounded-xl resize-none"
-                />
-              ) : (
-                <input
-                  {...feild?.input}
-                  {...(feild?.input?.type === "password" && {
-                    type: showPassword ? "text" : "password",
-                  })}
-                  onChange={handleOnChange}
-                  className="text-black p-2 w-full border border-gray-200 bg-white rounded-xl"
-                />
-              )}
-              {/* password show/hide icon */}
-              {feild?.input?.type === "password" && (
-                <button
-                  type="button"
-                  onClick={() =>
-                    setShowPassword && setShowPassword((prev: any) => !prev)
-                  }
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 cursor-pointer"
-                >
-                  {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                </button>
-              )}
-              {/* Error message*/}
-              {feild?.input?.name && errors?.[feild?.input?.name] && (
-                <p className="text-red-500">{errors?.[feild?.input?.name]}</p>
-              )}
+        {formData.feilds.map((feild: FormDataFeilds, index: number) => {
+          const { defaultValue, ...inputProps } = feild?.input;
+          return (
+            <div key={index} className="flex flex-col w-full">
+              <label htmlFor={feild?.input?.htmlFor} className="font-bold">
+                {feild.label}
+              </label>
+              <div className="relative">
+                {/* input field */}
+                {feild?.input?.type === "textarea" ? (
+                  <textarea
+                    {...inputProps}
+                    value={inputs?.[feild?.input?.name] || ""}
+                    rows={6}
+                    onChange={handleOnChange}
+                    className="text-black p-2 w-full border-gray-200 bg-white rounded-xl resize-none"
+                  />
+                ) : (
+                  <input
+                    {...inputProps}
+                    {...(feild?.input?.type === "password" && {
+                      type: showPassword ? "text" : "password",
+                    })}
+                    value={inputs?.[feild?.input?.name] || ""}
+                    onChange={handleOnChange}
+                    className="text-black p-2 w-full border border-gray-200 bg-white rounded-xl"
+                  />
+                )}
+                {/* password show/hide icon */}
+                {feild?.input?.type === "password" && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setShowPassword && setShowPassword((prev: any) => !prev)
+                    }
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 cursor-pointer"
+                  >
+                    {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                  </button>
+                )}
+                {/* Error message*/}
+                {feild?.input?.name && errors?.[feild?.input?.name] && (
+                  <p className="text-red-500">{errors?.[feild?.input?.name]}</p>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
         <div className="mt-2 flex justify-center">
           <button
             onClick={handleOnFormSubmit}

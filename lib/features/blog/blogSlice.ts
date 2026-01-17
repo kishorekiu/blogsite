@@ -11,11 +11,7 @@ export interface BlogState {
 }
 
 const initialState: BlogState = {
-  tempBlogData: {
-    title: "Kishore",
-    description: "Kishore slice",
-    slug: "",
-  },
+  tempBlogData: null,
 };
 
 const blogSlice = createSlice({
