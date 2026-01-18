@@ -6,6 +6,7 @@ import NavBar from "@/components/NavBar";
 import StoreProvider from "@/app/StoreProvider";
 import { getDataFromToken } from "@/lib/auth";
 import RenderSnackbar from "@/components/RenderSnackbar";
+import AuthNotifier from "@/components/AuthNotifier";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,6 +38,7 @@ export default async function RootLayout({
         <StoreProvider isAuth={isAuth}>
           <NavBar />
           <div className="md:mx-16 lg:mx-44">{children}</div>
+          <AuthNotifier />
           <RenderSnackbar />
         </StoreProvider>
       </body>

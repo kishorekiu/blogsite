@@ -6,6 +6,7 @@ import {
   clearTempBlog,
   saveTemBlog,
 } from "@/lib/features/blog/blogSlice";
+import { openSnackbar } from "@/lib/features/ui/snackbarSlice";
 import { useAppSelector } from "@/lib/hooks";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -31,6 +32,13 @@ const page = () => {
       const result = await createBlogAction(inputs);
       // check Unauthorized
       if (result.error) {
+        // trigger Snackbar
+        dispatch(
+          openSnackbar({
+            message: "Session Expired, Please Login",
+            severity: "error",
+          }),
+        );
         // save entered blog data to store
         dispatch(
           saveTemBlog({ title: inputs.title, description: inputs.description }),
@@ -40,6 +48,13 @@ const page = () => {
         return;
       }
       if (result.success) {
+        // trigger Snackbar
+        dispatch(
+          openSnackbar({
+            message: "Blog Published Successfully",
+            severity: "success",
+          }),
+        );
         // clear any saved draft blog
         dispatch(clearTempBlog());
         router.push("/");

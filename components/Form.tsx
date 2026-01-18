@@ -141,7 +141,7 @@ const Form = (props: FormProps) => {
                   <textarea
                     {...inputProps}
                     value={inputs?.[feild?.input?.name] || ""}
-                    rows={6}
+                    rows={10}
                     onChange={handleOnChange}
                     className="p-2 w-full rounded-xl resize-none border border-gray-200 bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-500"
                   />

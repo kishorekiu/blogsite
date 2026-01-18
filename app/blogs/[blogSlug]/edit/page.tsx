@@ -1,6 +1,6 @@
 import { getBlogBySlug } from "@/app/actions/getBlogs";
 import { getDataFromToken } from "@/lib/auth";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import EditBlogClientWrapper from "./EditBlogClientWrapper";
 
 const EditBlogPage = async ({
@@ -14,7 +14,6 @@ const EditBlogPage = async ({
     getDataFromToken(),
   ]);
   if (!blog) return notFound();
-  if (!userId) redirect(`/auth/login?from=/blogs/${blogSlug}/edit`);
   const editFormData = {
     title: "Edit Blog",
     cta: "Update Blog",
@@ -53,7 +52,9 @@ const EditBlogPage = async ({
     <EditBlogClientWrapper
       formData={editFormData}
       blogId={blog?._id}
-      isValidAuthorToAccess={Boolean(blog?.author?._id !== userId)}
+      blogSlug={blogSlug}
+      userId={userId}
+      authorId={blog?.author?._id}
     />
   );
 };
