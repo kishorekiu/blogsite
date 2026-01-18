@@ -32,8 +32,7 @@ export const POST = async (request: Request) => {
     await dbConnect();
     const { title, description } = await request.json();
 
-    const slug =
-      title.replace(/ /g, "-") + "-" + new Date().toLocaleDateString();
+    const slug = title.replace(/ /g, "-"); // + "-" + new Date().toLocaleDateString();
 
     const newBlog: IBlog = await Blog.create({
       title,
