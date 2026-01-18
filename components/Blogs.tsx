@@ -3,9 +3,10 @@ import BlogDescription from "./BlogDescription";
 import PrimaryButton from "./PrimaryButtonLink";
 import Link from "next/link";
 import PrimaryButtonLink from "./PrimaryButtonLink";
+import { IBlog } from "@/models/Blog";
 
 interface BlogsProps {
-  blogs: any[] | null;
+  blogs: IBlog[] | null;
 }
 
 const Blogs = (props: BlogsProps) => {
@@ -38,7 +39,8 @@ const Blogs = (props: BlogsProps) => {
             Read more...
           </p>
           <hr className="my-1 border-gray-100 dark:border-gray-700" />
-          <PrimaryButtonLink href={`/blogs/edit/${blog.slug}`} disabled={false}>
+          {/* Edit Blog Button */}
+          <PrimaryButtonLink href={`/blogs/${blog.slug}/edit`} disabled={false}>
             Edit Blog
           </PrimaryButtonLink>
         </div>

@@ -3,7 +3,7 @@ import React from "react";
 interface BlogTitleSectionProps {
   title: string;
   username: string;
-  createdAt: string;
+  createdAt: Date;
 }
 const BlogTitleSection = (props: BlogTitleSectionProps) => {
   const { title, username, createdAt } = props;

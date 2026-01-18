@@ -8,7 +8,7 @@ export const GET = async (request: Request) => {
   try {
     await dbConnect();
     const blogs: IBlog[] = await Blog.find({})
-      .populate("author", "username email")
+      .populate("author", "username")
       .sort({ createdAt: -1 });
     // return NextResponse.json({ message: "Blogs Sent", blogs }, { status: 201 });
     return NextResponse.json(blogs);
@@ -32,7 +32,7 @@ export const POST = async (request: Request) => {
     await dbConnect();
     const { title, description } = await request.json();
 
-    const slug = title.replace(/ /g, "-"); // + "-" + new Date().toLocaleDateString();
+    const slug = title.replace(/[ \/]/g, "-");
 
     const newBlog: IBlog = await Blog.create({
       title,

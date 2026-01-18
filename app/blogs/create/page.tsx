@@ -1,5 +1,5 @@
 "use client";
-import { createBlog } from "@/app/actions/blogActions";
+import { createBlogAction } from "@/app/actions/blogActions";
 import Form from "@/components/Form";
 import {
   BlogDraft,
@@ -28,7 +28,7 @@ const page = () => {
   const handleCreateBlog = async (inputs: BlogDraft) => {
     setLoading(true);
     try {
-      const result = await createBlog(inputs);
+      const result = await createBlogAction(inputs);
       // check Unauthorized
       if (result.error) {
         // save entered blog data to store

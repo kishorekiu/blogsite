@@ -19,7 +19,7 @@ const getUserId = async () => {
   }
 };
 
-export const createBlog = async (data: {
+export const createBlogAction = async (data: {
   title: string;
   description: string;
 }) => {
@@ -32,8 +32,7 @@ export const createBlog = async (data: {
 
     const { title, description } = data;
 
-    const slug =
-      title.replace(/ /g, "-") + "-" + new Date().toLocaleDateString();
+    const slug = title.replace(/[ \/]/g, "-");
 
     const newBlog: IBlog = await Blog.create({
       title,
@@ -48,5 +47,36 @@ export const createBlog = async (data: {
   } catch (e: any) {
     console.error("Error in createBlog", e);
     return { error: e.message || "Error Creating Blog" };
+  }
+};
+
+export const updateBlogAction = async (
+  blogId: string,
+  blog: {
+    title: string;
+    description: string;
+  },
+) => {
+  try {
+    const userId = await getUserId();
+    if (!userId) return { error: "Unauthorized" };
+    await dbConnect();
+    const updatedBlog = await Blog.findOneAndUpdate(
+      { _id: blogId, author: userId },
+      {
+        title: blog.title,
+        description: blog.description,
+        slug: blog.title.replace(/[ \/]/g, "-"),
+      },
+      { new: true },
+    );
+    if (!updatedBlog)
+      return { error: "Blog not found or Unauthorized to edit this blog" };
+    revalidatePath("/blogs");
+    revalidatePath(`/blogs/${updatedBlog.slug}`);
+    return { success: true, message: "Blog Updated" };
+  } catch (e: any) {
+    console.error("Error in updateBlog", e);
+    return { error: e.message || "Error Updating Blog" };
   }
 };
