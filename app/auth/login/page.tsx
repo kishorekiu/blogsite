@@ -9,7 +9,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 const formData = {
   title: "Sign In",
-  cta: "Register",
+  cta: "Sign In",
   feilds: [
     {
       label: "Email",

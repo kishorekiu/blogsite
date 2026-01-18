@@ -32,6 +32,7 @@ export interface FormDataFeilds {
     required: string;
   };
 }
+
 const Form = (props: FormProps) => {
   const {
     formData,
@@ -40,29 +41,30 @@ const Form = (props: FormProps) => {
     handleFormSubmit,
     isLoading,
   } = props;
-  const [inputs, setInputs] = useState<{ [key: string]: string }>();
 
+  // Initialize state
+  const [inputs, setInputs] = useState<{ [key: string]: string }>({});
+
+  // Sync state with props
   useEffect(() => {
     const initialValues: { [key: string]: string } = {};
     formData.feilds.forEach((field) => {
-      // If a defaultValue exists in the prop, set it in the state immediately
       if (field.input.defaultValue) {
         initialValues[field.input.name] = field.input.defaultValue;
       }
     });
-    console.log("initialValues", initialValues);
-    setInputs(initialValues);
+    setInputs((prev) => ({ ...initialValues, ...prev }));
   }, [formData]);
-  console.log("inputs", inputs);
-  console.log("formData", formData);
 
   const [errors, setErrors] = useState<{ [key: string]: string }>();
+
   const handleOnChange = (e: any) => {
     const name = e.target.name;
     const value = e.target.value;
     setInputs((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
+
   const handleOnFormSubmit = (e: any) => {
     e.preventDefault();
     const newErrors: { [key: string]: string } = {};
@@ -90,10 +92,19 @@ const Form = (props: FormProps) => {
 
   return (
     <div className="flex flex-col items-center justify-center m-3">
-      <div className="flex flex-col gap-2 border border-gray-200 rounded-xl p-5 my-5 mx-10 w-full lg:w-120 bg-gray-50">
+      {/* DARK MODE FIX:
+         - bg-gray-50 -> dark:bg-gray-900 (Container background)
+         - border-gray-200 -> dark:border-gray-700 (Softer border)
+      */}
+      <div className="flex flex-col gap-2 border border-gray-200 dark:border-gray-700 rounded-xl p-5 my-5 mx-10 w-full lg:w-[30rem] bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
         <div className="flex justify-center mb-2">
-          <p className="text-3xl font-bold text-blue-400">{formData.title}</p>
+          {/* Title Color */}
+          <p className="text-3xl font-bold text-blue-500 dark:text-blue-400">
+            {formData.title}
+          </p>
         </div>
+
+        {/* API Messages */}
         <div>
           {props?.apiResponse?.message && (
             <p className="text-green-500 text-center">
@@ -106,22 +117,33 @@ const Form = (props: FormProps) => {
             </p>
           )}
         </div>
+
         {formData.feilds.map((feild: FormDataFeilds, index: number) => {
           const { defaultValue, ...inputProps } = feild?.input;
+
           return (
             <div key={index} className="flex flex-col w-full">
-              <label htmlFor={feild?.input?.htmlFor} className="font-bold">
+              {/* Label Color: dark:text-gray-200 */}
+              <label
+                htmlFor={feild?.input?.htmlFor}
+                className="font-bold text-gray-700 dark:text-gray-200 mb-1"
+              >
                 {feild.label}
               </label>
+
               <div className="relative">
-                {/* input field */}
+                {/* INPUT STYLES:
+                   - bg-white -> dark:bg-gray-800
+                   - text-black -> dark:text-white
+                   - border-gray-200 -> dark:border-gray-600
+                */}
                 {feild?.input?.type === "textarea" ? (
                   <textarea
                     {...inputProps}
                     value={inputs?.[feild?.input?.name] || ""}
                     rows={6}
                     onChange={handleOnChange}
-                    className="text-black p-2 w-full border-gray-200 bg-white rounded-xl resize-none"
+                    className="p-2 w-full rounded-xl resize-none border border-gray-200 bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-500"
                   />
                 ) : (
                   <input
@@ -131,42 +153,48 @@ const Form = (props: FormProps) => {
                     })}
                     value={inputs?.[feild?.input?.name] || ""}
                     onChange={handleOnChange}
-                    className="text-black p-2 w-full border border-gray-200 bg-white rounded-xl"
+                    className="p-2 w-full rounded-xl border border-gray-200 bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-500"
                   />
                 )}
-                {/* password show/hide icon */}
+
+                {/* Toggle Password Icon */}
                 {feild?.input?.type === "password" && (
                   <button
                     type="button"
                     onClick={() =>
                       setShowPassword && setShowPassword((prev: any) => !prev)
                     }
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 cursor-pointer"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
                   >
                     {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                   </button>
                 )}
-                {/* Error message*/}
+
+                {/* Error Message */}
                 {feild?.input?.name && errors?.[feild?.input?.name] && (
-                  <p className="text-red-500">{errors?.[feild?.input?.name]}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors?.[feild?.input?.name]}
+                  </p>
                 )}
               </div>
             </div>
           );
         })}
-        <div className="mt-2 flex justify-center">
+
+        <div className="mt-4 flex justify-center">
           <button
             onClick={handleOnFormSubmit}
+            disabled={isLoading}
             className={`
-              border font-bold  text-lggg border-gray-400 rounded-xl py-2 px-3
+              border font-bold text-lg rounded-xl py-2 px-6 transition-colors duration-200
               ${
                 isLoading
-                  ? "cursor-not-allowed opacity-60 bg-gray-200 text-gray-400"
-                  : "cursor-pointer hover:text-white hover:bg-blue-300 bg-gray-300 text-grey-500"
+                  ? "cursor-not-allowed opacity-60 bg-gray-200 text-gray-400 dark:bg-gray-700 dark:text-gray-500 border-transparent"
+                  : "cursor-pointer hover:text-white hover:bg-blue-400 bg-gray-300 text-gray-700 border-gray-400 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-blue-600"
               }
             `}
           >
-            {formData.cta}
+            {isLoading ? "Please wait..." : formData.cta}
           </button>
         </div>
       </div>

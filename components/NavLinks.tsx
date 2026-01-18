@@ -15,7 +15,7 @@ const navLinks = {
 const NavLinks = () => {
   const isAuth = useAppSelector((state) => state.auth.isAuth);
   return (
-    <div>
+    <div className="h-full flex items-center">
       {isAuth ? (
         <AuthLinks
           signOut={navLinks?.["signOut"]}
