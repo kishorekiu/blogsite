@@ -10,6 +10,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 const formData = {
   title: "Sign In",
   cta: "Sign In",
+  optionalCta: {
+    label: "new here? Sign Up",
+    href: "/auth/register",
+  },
   feilds: [
     {
       label: "Email",

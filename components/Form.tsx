@@ -2,11 +2,16 @@
 import React, { useEffect, useState } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import TertiaryButtonLink from "./TeritioryButtonLink";
 
 export interface FormProps {
   formData: {
     title: string;
     cta: string;
+    optionalCta?: {
+      label: string;
+      href: string;
+    };
     feilds: FormDataFeilds[];
   };
   showPassword?: boolean;
@@ -181,7 +186,7 @@ const Form = (props: FormProps) => {
           );
         })}
 
-        <div className="mt-4 flex justify-center">
+        <div className="mt-4 flex justify-center items-center gap-4">
           <button
             onClick={handleOnFormSubmit}
             disabled={isLoading}
@@ -196,6 +201,12 @@ const Form = (props: FormProps) => {
           >
             {isLoading ? "Please wait..." : formData.cta}
           </button>
+          {/* @ts-ignore */}
+          {formData?.optionalCta?.href && (
+            <TertiaryButtonLink href={formData?.optionalCta?.href}>
+              {formData?.optionalCta?.label}
+            </TertiaryButtonLink>
+          )}
         </div>
       </div>
     </div>

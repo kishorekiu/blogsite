@@ -6,6 +6,10 @@ import { useRouter } from "next/navigation";
 const formData = {
   title: "Sign Up",
   cta: "Sign Up",
+  optionalCta: {
+    label: "return user? Sign In",
+    href: "/auth/login",
+  },
   feilds: [
     {
       label: "Username",

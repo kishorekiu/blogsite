@@ -14,6 +14,7 @@ import { useDispatch } from "react-redux";
 
 const page = () => {
   const tempBlogData = useAppSelector((state) => state?.blog?.tempBlogData);
+  const isAuth = useAppSelector((state) => state.auth.isAuth);
   const dispatch = useDispatch();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -26,6 +27,16 @@ const page = () => {
       setInitialValues(tempBlogData);
     }
   }, [tempBlogData]);
+  useEffect(() => {
+    if (!isAuth) {
+      dispatch(
+        openSnackbar({
+          message: "You must be logged in to create a blog",
+          severity: "warning",
+        }),
+      );
+    }
+  }, [isAuth]);
   const handleCreateBlog = async (inputs: BlogDraft) => {
     setLoading(true);
     try {
