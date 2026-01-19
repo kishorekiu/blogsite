@@ -1,5 +1,7 @@
+"use server";
 import dbConnect from "@/lib/dbConnect";
 import Blog, { IBlog } from "@/models/Blog";
+import { IUser } from "@/models/User";
 
 export const getBlogs = async () => {
   try {
@@ -29,7 +31,7 @@ export const getBlogBySlug = async (slug: any) => {
       _id: blog._id.toString(),
       author: {
         ...blog.author,
-        _id: blog.author._id.toString(),
+        _id: (blog.author as IUser)._id.toString(),
       },
       createdAt: blog.createdAt.toString(),
       updatedAt: blog.updatedAt.toString(),

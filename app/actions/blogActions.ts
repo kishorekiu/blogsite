@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import dbConnect from "@/lib/dbConnect";
 import Blog, { IBlog } from "@/models/Blog";
 import { revalidatePath } from "next/cache";
+import { getDataFromToken } from "@/lib/auth";
 
 const JWT_SECRET = process.env.JWT_SECRET || "";
 
@@ -78,5 +79,25 @@ export const updateBlogAction = async (
   } catch (e: any) {
     console.error("Error in updateBlog", e);
     return { error: e.message || "Error Updating Blog" };
+  }
+};
+
+export const deleteBlogAction = async (blogId: string) => {
+  try {
+    const userId = await getDataFromToken();
+    if (!userId) return { error: "Unauthorized" };
+
+    await dbConnect();
+    const deletedBlog = await Blog.findOneAndDelete({
+      _id: blogId,
+      author: userId,
+    });
+    if (!deletedBlog)
+      return { error: "Blog not found or Unauthorized to delete this blog" };
+    revalidatePath("/");
+    return { success: true, message: "Blog Deleted" };
+  } catch (e: any) {
+    console.error("Error deleting blog", e);
+    return { error: e.message || "Error deleting blog" };
   }
 };

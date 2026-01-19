@@ -4,13 +4,16 @@ import PrimaryButton from "../ui/PrimaryButtonLink";
 import Link from "next/link";
 import PrimaryButtonLink from "../ui/PrimaryButtonLink";
 import { IBlog } from "@/models/Blog";
+import { IUser } from "@/models/User";
+import DeleteBlogButton from "./DeleteBlogButton";
 
 interface BlogsProps {
   blogs: IBlog[] | null;
+  userId?: string;
 }
 
 const Blogs = (props: BlogsProps) => {
-  const { blogs } = props;
+  const { blogs, userId } = props;
 
   return (
     <div className="flex flex-col gap-6 pb-10">
@@ -24,7 +27,7 @@ const Blogs = (props: BlogsProps) => {
           {/* Title & Meta */}
           <BlogTitleSection
             title={blog.title}
-            username={blog.author.username}
+            username={(blog?.author as IUser)?.username || "Unknown"}
             createdAt={blog.createdAt}
           />
           <hr className="my-1 border-gray-100 dark:border-gray-700" />
@@ -38,11 +41,21 @@ const Blogs = (props: BlogsProps) => {
           >
             Read more...
           </p>
-          <hr className="my-1 border-gray-100 dark:border-gray-700" />
           {/* Edit Blog Button */}
-          <PrimaryButtonLink href={`/blogs/${blog.slug}/edit`} disabled={false}>
-            Edit Blog
-          </PrimaryButtonLink>
+          {userId === (blog?.author as IUser)?._id?.toString() && (
+            <>
+              <hr className="my-1 border-gray-100 dark:border-gray-700" />
+              <div className="flex justify-end gap-2">
+                <PrimaryButtonLink
+                  href={`/blogs/${blog.slug}/edit`}
+                  disabled={false}
+                >
+                  Edit Blog
+                </PrimaryButtonLink>
+                <DeleteBlogButton blogId={blog?._id?.toString()} />
+              </div>
+            </>
+          )}
         </div>
       ))}
     </div>

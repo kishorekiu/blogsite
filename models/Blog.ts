@@ -1,10 +1,11 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 import "@/models/User";
+import { IUser } from "@/models/User";
 
 export interface IBlog extends Document {
   title: string;
   description: string;
-  author: mongoose.Types.ObjectId | any;
+  author: mongoose.Types.ObjectId | IUser | null;
   createdAt: Date;
   updatedAt: Date;
   slug: string;
