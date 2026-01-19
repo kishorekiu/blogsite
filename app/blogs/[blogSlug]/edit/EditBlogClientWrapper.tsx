@@ -1,6 +1,6 @@
 "use client";
 import { updateBlogAction } from "@/app/actions/blogActions";
-import Form, { FormDataFeilds } from "@/components/Form";
+import Form, { FormDataFeilds } from "@/components/ui/Form";
 import { openSnackbar } from "@/lib/features/ui/snackbarSlice";
 import { useAppDispatch } from "@/lib/hooks";
 import { useRouter } from "next/navigation";
@@ -30,7 +30,8 @@ const EditBlogClientWrapper = (props: EditBlogClientWrapperProps) => {
     if (!userId) {
       dispatch(
         openSnackbar({
-          message: "You must be logged in to edit a blog",
+          message:
+            "Redirected to Login Page, You must be logged in to edit a blog",
           severity: "error",
         }),
       );
@@ -53,7 +54,7 @@ const EditBlogClientWrapper = (props: EditBlogClientWrapperProps) => {
       if (res.error) {
         dispatch(
           openSnackbar({
-            message: res.message,
+            message: res.error,
             severity: "error",
           }),
         );

@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 // @ts-ignore
 import "./globals.css";
-import NavBar from "@/components/NavBar";
+import NavBar from "@/components/navbar/NavBar";
 import StoreProvider from "@/app/StoreProvider";
 import { getDataFromToken } from "@/lib/auth";
-import RenderSnackbar from "@/components/RenderSnackbar";
-import AuthNotifier from "@/components/AuthNotifier";
+import RenderSnackbar from "@/components/ui/RenderSnackbar";
+import AuthNotifier from "@/components/utility/AuthNotifier";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

@@ -1,8 +1,8 @@
 import BlogTitleSection from "./BlogTitleSection";
 import BlogDescription from "./BlogDescription";
-import PrimaryButton from "./PrimaryButtonLink";
+import PrimaryButton from "../ui/PrimaryButtonLink";
 import Link from "next/link";
-import PrimaryButtonLink from "./PrimaryButtonLink";
+import PrimaryButtonLink from "../ui/PrimaryButtonLink";
 import { IBlog } from "@/models/Blog";
 
 interface BlogsProps {
