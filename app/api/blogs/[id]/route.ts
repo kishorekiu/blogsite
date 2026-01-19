@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 // PUT - Update a blog - dynamic route - blogs/id
 export const PUT = async (
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) => {
   try {
     const { id } = await params;
@@ -24,10 +24,10 @@ export const PUT = async (
       return NextResponse.json({ error: "Blog not found" }, { status: 404 });
     }
     // before update blog, make sure blog belongs to loggedIn user
-    if (blog.author.toString() !== userId) {
+    if ((blog as IBlog)?.author?.toString() !== userId) {
       return NextResponse.json(
         { error: "this Article does not belong to you" },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -37,12 +37,12 @@ export const PUT = async (
 
     return NextResponse.json(
       { message: "blog updated", blog },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (e) {
     return NextResponse.json(
       { error: "Internal server error while Updating Blog" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 };
@@ -50,7 +50,7 @@ export const PUT = async (
 // DELETE - Delete a blog - dynamic route - blogs/id
 export const DELETE = async (
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) => {
   try {
     const blogId = (await params).id;
@@ -65,10 +65,10 @@ export const DELETE = async (
     if (!blog) {
       return NextResponse.json({ error: "Blog not found" }, { status: 404 });
     }
-    if (blog.author.toString() !== userId) {
+    if ((blog as IBlog)?.author?.toString() !== userId) {
       return NextResponse.json(
         { error: "you can only delete your own blog" },
-        { status: 403 }
+        { status: 403 },
       );
     }
     await Blog.findByIdAndDelete(blogId);
@@ -76,7 +76,7 @@ export const DELETE = async (
   } catch (e) {
     return NextResponse.json(
       { error: "Internal server error while Deleting a Blog" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 };
