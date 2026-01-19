@@ -2,7 +2,7 @@
 import React, { Suspense, useState } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import Form from "@/components/ui/Form";
+import Form from "@/components/form/Form";
 import { useAppDispatch } from "@/lib/hooks";
 import { login } from "@/lib/features/auth/authSlice";
 import { useRouter, useSearchParams } from "next/navigation";

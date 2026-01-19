@@ -1,6 +1,6 @@
 "use client";
 import { createBlogAction } from "@/app/actions/blogActions";
-import Form from "@/components/ui/Form";
+import Form from "@/components/form/Form";
 import {
   BlogDraft,
   clearTempBlog,

@@ -1,6 +1,6 @@
 "use client";
 import { updateBlogAction } from "@/app/actions/blogActions";
-import Form, { FormDataFeilds } from "@/components/ui/Form";
+import Form, { FormDataFeilds } from "@/components/form/Form";
 import { openSnackbar } from "@/lib/features/ui/snackbarSlice";
 import { useAppDispatch } from "@/lib/hooks";
 import { useRouter } from "next/navigation";
