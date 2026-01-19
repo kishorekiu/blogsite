@@ -1,11 +1,5 @@
-import BlogTitleSection from "./BlogTitleSection";
-import BlogDescription from "./BlogDescription";
-import PrimaryButton from "../ui/PrimaryButtonLink";
-import Link from "next/link";
-import PrimaryButtonLink from "../ui/PrimaryButtonLink";
 import { IBlog } from "@/models/Blog";
-import { IUser } from "@/models/User";
-import DeleteBlogButton from "./DeleteBlogButton";
+import SignleBlog from "./SignleBlog";
 
 interface BlogsProps {
   blogs: IBlog[] | null;
@@ -18,45 +12,7 @@ const Blogs = (props: BlogsProps) => {
   return (
     <div className="flex flex-col gap-6 pb-10">
       {blogs?.map((blog, index) => (
-        <div
-          key={index}
-          className="group flex flex-col p-5 sm:p-6 gap-3 rounded-2xl border transition-all duration-300 cursor-pointer hover:-translate-y-1 shadow-sm hover:shadow-xl
-              bg-white border-gray-200
-              dark:bg-gray-900 dark:border-gray-800"
-        >
-          {/* Title & Meta */}
-          <BlogTitleSection
-            title={blog.title}
-            username={(blog?.author as IUser)?.username || "Unknown"}
-            createdAt={blog.createdAt}
-          />
-          <hr className="my-1 border-gray-100 dark:border-gray-700" />
-          {/* Markdown Preview */}
-          <BlogDescription description={blog.description} />
-          {/* Mobile "Read More" hint */}
-          <p
-            className="text-sm font-medium mt-1 group-hover:underline sm:hidden
-              text-blue-500
-              dark:text-blue-400"
-          >
-            Read more...
-          </p>
-          {/* Edit Blog Button */}
-          {userId === (blog?.author as IUser)?._id?.toString() && (
-            <>
-              <hr className="my-1 border-gray-100 dark:border-gray-700" />
-              <div className="flex justify-end gap-2">
-                <PrimaryButtonLink
-                  href={`/blogs/${blog.slug}/edit`}
-                  disabled={false}
-                >
-                  Edit Blog
-                </PrimaryButtonLink>
-                <DeleteBlogButton blogId={blog?._id?.toString()} />
-              </div>
-            </>
-          )}
-        </div>
+        <SignleBlog blog={blog} userId={userId} key={index} />
       ))}
     </div>
   );

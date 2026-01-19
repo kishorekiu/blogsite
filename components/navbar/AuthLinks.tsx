@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-import React from "react";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { logout } from "@/lib/features/auth/authSlice";
@@ -46,19 +45,16 @@ const AuthLinks = (props: AuthLinksProps) => {
       </div>
 
       {/* Profile Button */}
-      <div
+      <Link
+        href={profile?.href || ""}
+        title={profile?.name}
         className="flex items-center gap-2 border rounded-full py-2 px-4 cursor-pointer transition-all duration-200
         border-gray-300 text-gray-700 hover:bg-gray-100
         dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:border-gray-500"
       >
         <AccountBoxIcon />
-        <Link
-          className="hidden sm:inline font-medium"
-          href={profile?.href || ""}
-        >
-          {profile?.name}
-        </Link>
-      </div>
+        <p className="hidden sm:inline font-medium">{profile?.name}</p>
+      </Link>
     </div>
   );
 };

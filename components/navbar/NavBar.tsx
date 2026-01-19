@@ -1,5 +1,6 @@
 import Link from "next/link";
 import NavLinks from "./NavLinks";
+import { getDataFromToken } from "@/lib/auth";
 
 const NavBar = async () => {
   return (

@@ -16,7 +16,7 @@ export const POST = async (request: Request) => {
     if (!user) {
       return NextResponse.json(
         { error: "User Not Registered" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -25,16 +25,16 @@ export const POST = async (request: Request) => {
     if (!isMatch) {
       return NextResponse.json(
         { error: "Incorrect Password!" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
     // 3. generate JWT
     const token = jwt.sign(
-      { userId: user._id, email: user.email },
+      { userId: user._id, email: user.email, username: user.username },
       // @ts-ignore
       JWT_SECRET,
-      { expiresIn: "1d" }
+      { expiresIn: "1d" },
     );
 
     // 4. set cookie
@@ -55,7 +55,7 @@ export const POST = async (request: Request) => {
   } catch (e) {
     return NextResponse.json(
       { error: "Internal Server Error Login Route", e },
-      { status: 500 }
+      { status: 500 },
     );
   }
 };
