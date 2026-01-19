@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import dbConnect from "@/lib/dbConnect";
 import Blog, { IBlog } from "@/models/Blog";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { getDataFromToken } from "@/lib/auth";
 
 const JWT_SECRET = process.env.JWT_SECRET || "";
@@ -42,6 +42,7 @@ export const createBlogAction = async (data: {
       author: userId,
     });
 
+    revalidateTag("blogs", "default");
     revalidatePath("/blogs");
 
     return { success: true, blogId: newBlog?._id?.toString() };
@@ -73,6 +74,7 @@ export const updateBlogAction = async (
     );
     if (!updatedBlog)
       return { error: "Blog not found or Unauthorized to edit this blog" };
+    revalidateTag("blogs", "default");
     revalidatePath("/blogs");
     revalidatePath(`/blogs/${updatedBlog.slug}`);
     return { success: true, message: "Blog Updated" };
@@ -94,6 +96,7 @@ export const deleteBlogAction = async (blogId: string) => {
     });
     if (!deletedBlog)
       return { error: "Blog not found or Unauthorized to delete this blog" };
+    revalidateTag("blogs", "default");
     revalidatePath("/");
     return { success: true, message: "Blog Deleted" };
   } catch (e: any) {
