@@ -1,10 +1,7 @@
-import Link from "next/link";
 import { IBlog } from "@/models/Blog";
 import { IUser } from "@/models/User";
 import BlogTitleSection from "./BlogTitleSection";
 import BlogDescription from "./BlogDescription";
-import PrimaryButtonLink from "../ui/PrimaryButtonLink";
-import DeleteBlogButton from "./DeleteBlogButton";
 
 interface SingleBlogProps {
   blog: IBlog;
@@ -35,7 +32,11 @@ const SingleBlog = (props: SingleBlogProps) => {
         <BlogTitleSection
           title={blog.title}
           username={(blog?.author as IUser)?.username || "Unknown"}
+          blogSlug={blog.slug}
           createdAt={blog?.createdAt}
+          blogId={(blog?._id as unknown)?.toString()}
+          isAuthor={isAuthor}
+          disableTitleLink={true}
         />
       ) : (
         // If Card View, make it clickable
@@ -44,7 +45,9 @@ const SingleBlog = (props: SingleBlogProps) => {
           username={(blog.author as IUser)?.username}
           createdAt={blog.createdAt}
           blogSlug={blog.slug}
-          disableTitleLink={isFullView} // Disable link if we are already on the full page
+          disableTitleLink={false} // Disable link if we are already on the full page
+          blogId={(blog?._id as unknown)?.toString()}
+          isAuthor={isAuthor}
         />
       )}
 
@@ -56,22 +59,6 @@ const SingleBlog = (props: SingleBlogProps) => {
         slug={blog.slug}
         isFullView={isFullView}
       />
-
-      {/* 3. Actions (Only for Author) */}
-      {isAuthor && (
-        <>
-          <hr className="my-1 border-gray-100 dark:border-gray-700" />
-          <div className="flex justify-end gap-2">
-            <PrimaryButtonLink
-              href={`/blogs/${blog.slug}/edit`}
-              disabled={false}
-            >
-              Edit Blog
-            </PrimaryButtonLink>
-            <DeleteBlogButton blogId={blog?._id?.toString()} />
-          </div>
-        </>
-      )}
     </div>
   );
 };

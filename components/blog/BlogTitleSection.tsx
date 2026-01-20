@@ -1,16 +1,28 @@
 "use client";
 import Link from "next/link";
+import EditBlogButton from "./EditBlogButton";
+import DeleteBlogButton from "./DeleteBlogButton";
 
 interface BlogTitleSectionProps {
   title: string;
   username: string;
   createdAt: Date | string; // Relaxed type to handle ISO strings
-  blogSlug?: string;
+  blogSlug: string;
   disableTitleLink?: boolean; // New prop to control linking
+  isAuthor: boolean;
+  blogId: any;
 }
 
 const BlogTitleSection = (props: BlogTitleSectionProps) => {
-  const { title, username, createdAt, blogSlug, disableTitleLink } = props;
+  const {
+    title,
+    username,
+    createdAt,
+    blogSlug,
+    blogId,
+    disableTitleLink,
+    isAuthor,
+  } = props;
 
   // Helper to format date safely
   const formattedDate = new Date(createdAt).toLocaleDateString("en-US", {
@@ -19,48 +31,63 @@ const BlogTitleSection = (props: BlogTitleSectionProps) => {
     year: "numeric",
   });
 
+  const handleDisableTitleLink = () => {
+    if (!disableTitleLink) return false;
+    if (!blogSlug) return false;
+    return true;
+  };
+
   return (
-    <div className="flex flex-col gap-1">
-      {/* 1. Title Logic:
-             If we have a slug AND linking is allowed -> Render Link
-             Otherwise -> Render plain text
-      */}
-      {blogSlug && !disableTitleLink ? (
-        <Link
-          href={`/blogs/${blogSlug}`}
-          className="text-xl sm:text-2xl font-bold transition-colors w-fit
+    <div className="flex justify-between items-center gap-2">
+      <div className="flex flex-col gap-1">
+        {!handleDisableTitleLink() ? (
+          <Link
+            href={`/blogs/${blogSlug}`}
+            className="text-xl sm:text-2xl font-bold transition-colors w-fit
                    text-gray-900 hover:text-blue-600
                    dark:text-gray-100 dark:hover:text-blue-400"
-        >
-          {title}
-        </Link>
-      ) : (
-        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
-          {title}
-        </h1>
-      )}
+          >
+            {title}
+          </Link>
+        ) : (
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
+            {title}
+          </h1>
+        )}
 
-      {/* 2. Meta Info (Author & Date) */}
-      <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm mt-1 text-gray-500 dark:text-gray-400">
-        <span className="flex items-center gap-1">
-          By
-          <Link
-            href={`/profile/${username}`}
-            // Stop propagation to prevent triggering parent card clicks (if any)
-            onClick={(e) => e.stopPropagation()}
-            className="font-medium px-2 py-0.5 rounded-full transition-colors
+        {/* 2. Meta Info (Author & Date) */}
+        <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm mt-1 text-gray-500 dark:text-gray-400">
+          <span className="flex items-center gap-1">
+            By
+            <Link
+              href={`/profile/${username}`}
+              // Stop propagation to prevent triggering parent card clicks (if any)
+              onClick={(e) => e.stopPropagation()}
+              className="font-medium px-2 py-0.5 rounded-full transition-colors
                      text-blue-600 bg-blue-50 hover:bg-blue-100
                      dark:text-blue-400 dark:bg-blue-900/20 dark:hover:bg-blue-900/40"
-          >
-            {username}
-          </Link>
-        </span>
+            >
+              {username}
+            </Link>
+          </span>
 
-        <span className="hidden sm:inline text-gray-300 dark:text-gray-600">
-          •
-        </span>
+          <span className="hidden sm:inline text-gray-300 dark:text-gray-600">
+            •
+          </span>
 
-        <span>{formattedDate}</span>
+          <span>{formattedDate}</span>
+        </div>
+      </div>
+      <div>
+        {isAuthor && (
+          <>
+            {/* <hr className="my-1 border-gray-100 dark:border-gray-700" /> */}
+            <div className="flex justify-end items-center gap-2">
+              <EditBlogButton blogSlug={blogSlug} />
+              <DeleteBlogButton blogId={blogId?.toString()} />
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
