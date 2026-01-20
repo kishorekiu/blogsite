@@ -1,5 +1,5 @@
 import { getBlogBySlug } from "@/app/actions/getBlogs";
-import SignleBlog from "@/components/blog/SignleBlog";
+import SignleBlog from "@/components/blog/SingleBlog";
 import BackButton from "@/components/ui/BackButton";
 import { getDataFromToken } from "@/lib/auth";
 import { IUser } from "@/models/User";
@@ -22,7 +22,7 @@ const BlogPage = async ({
     <div className="mt-8 max-w-4xl mx-auto px-4 sm:px-6">
       <BackButton />
       <div className="m-3 mx-0">
-        <SignleBlog blog={blog as any} userId={userId} />
+        <SignleBlog blog={blog as any} userId={userId} isFullView={true} />
       </div>
       {(blog?.author as any)?.username && (
         <div className="mt-8 px-4">

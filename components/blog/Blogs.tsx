@@ -1,5 +1,5 @@
 import { IBlog } from "@/models/Blog";
-import SignleBlog from "./SignleBlog";
+import SignleBlog from "./SingleBlog";
 
 interface BlogsProps {
   blogs: IBlog[] | null;

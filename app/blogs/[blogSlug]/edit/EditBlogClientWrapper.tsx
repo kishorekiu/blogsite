@@ -66,7 +66,7 @@ const EditBlogClientWrapper = (props: EditBlogClientWrapperProps) => {
             severity: "success",
           }),
         );
-        router.push("/");
+        router.push(`/blogs/${blogSlug}`);
         router.refresh();
       }
       console.log(res);

@@ -1,44 +1,66 @@
+"use client";
 import Link from "next/link";
 
 interface BlogTitleSectionProps {
   title: string;
   username: string;
-  createdAt: Date;
+  createdAt: Date | string; // Relaxed type to handle ISO strings
   blogSlug?: string;
+  disableTitleLink?: boolean; // New prop to control linking
 }
-const BlogTitleSection = (props: BlogTitleSectionProps) => {
-  const { title, username, createdAt, blogSlug } = props;
-  return (
-    <div>
-      <Link
-        href={`/blogs/${blogSlug}`}
-        title={"Visit Blog"}
-        className="text-xl sm:text-2xl font-bold transition-colors
-                text-gray-800 group-hover:text-blue-600
-                dark:text-gray-100 dark:group-hover:text-blue-400"
-      >
-        {title}
-      </Link>
 
-      <div
-        className="flex flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm mt-2
-                text-gray-500
-                dark:text-gray-400"
-      >
-        <p className="flex items-center gap-1">
+const BlogTitleSection = (props: BlogTitleSectionProps) => {
+  const { title, username, createdAt, blogSlug, disableTitleLink } = props;
+
+  // Helper to format date safely
+  const formattedDate = new Date(createdAt).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  return (
+    <div className="flex flex-col gap-1">
+      {/* 1. Title Logic:
+             If we have a slug AND linking is allowed -> Render Link
+             Otherwise -> Render plain text
+      */}
+      {blogSlug && !disableTitleLink ? (
+        <Link
+          href={`/blogs/${blogSlug}`}
+          className="text-xl sm:text-2xl font-bold transition-colors w-fit
+                   text-gray-900 hover:text-blue-600
+                   dark:text-gray-100 dark:hover:text-blue-400"
+        >
+          {title}
+        </Link>
+      ) : (
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
+          {title}
+        </h1>
+      )}
+
+      {/* 2. Meta Info (Author & Date) */}
+      <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm mt-1 text-gray-500 dark:text-gray-400">
+        <span className="flex items-center gap-1">
           By
           <Link
             href={`/profile/${username}`}
-            title={"Visit profile"}
-            className="font-semibold px-2 py-0.5 rounded-full
-                    text-blue-500 bg-blue-50
-                    dark:text-blue-300 dark:bg-blue-900/30"
+            // Stop propagation to prevent triggering parent card clicks (if any)
+            onClick={(e) => e.stopPropagation()}
+            className="font-medium px-2 py-0.5 rounded-full transition-colors
+                     text-blue-600 bg-blue-50 hover:bg-blue-100
+                     dark:text-blue-400 dark:bg-blue-900/20 dark:hover:bg-blue-900/40"
           >
             {username}
           </Link>
-        </p>
-        <span className="hidden sm:inline">•</span>
-        <p>{new Date(createdAt).toLocaleDateString()}</p>
+        </span>
+
+        <span className="hidden sm:inline text-gray-300 dark:text-gray-600">
+          •
+        </span>
+
+        <span>{formattedDate}</span>
       </div>
     </div>
   );
