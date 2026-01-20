@@ -54,36 +54,40 @@ export const getBlogBySlug = unstable_cache(
   },
 );
 
-export const getBlogsByUsername = unstable_cache(
-  async (username: string) => {
-    try {
-      await dbConnect();
-      const user = await User.findOne({
-        username: { $regex: new RegExp(`^${username}`, "i") },
-      });
-      if (!user) return null;
-      const blogs = await Blog.find({ author: user._id })
-        .populate("author", "username")
-        .sort({ createdAt: -1 });
+const fetchUserBlogsFromDB = async (username: string) => {
+  try {
+    await dbConnect();
+    const user = await User.findOne({
+      username: { $regex: new RegExp(`^${username}`, "i") },
+    });
+    if (!user) return null;
+    const blogs = await Blog.find({ author: user._id })
+      .populate("author", "username")
+      .sort({ createdAt: -1 });
 
-      return blogs.map((blog) => ({
-        ...blog.toObject(),
-        _id: blog._id.toString(),
-        author: {
-          ...(blog?.author as any)?._doc,
-          _id: blog?.author?._id?.toString(),
-        },
-        createdAt: blog.createdAt.toISOString(),
-        updatedAt: blog.updatedAt.toISOString(),
-      }));
-    } catch (e) {
-      console.error("Error in getBlogsByUsername", e);
-      return null;
-    }
-  },
-  ["blogs-by-username"],
-  {
-    revalidate: 3600,
-    tags: ["blogs"],
-  },
-);
+    return blogs.map((blog) => ({
+      ...blog.toObject(),
+      _id: blog._id.toString(),
+      author: {
+        ...(blog?.author as any)?._doc,
+        _id: blog?.author?._id?.toString(),
+      },
+      createdAt: blog.createdAt.toISOString(),
+      updatedAt: blog.updatedAt.toISOString(),
+    }));
+  } catch (e) {
+    console.error("Error in getBlogsByUsername", e);
+    return null;
+  }
+};
+export const getBlogsByUsername = async (username: string) => {
+  const getCachedBlogs = unstable_cache(
+    async () => fetchUserBlogsFromDB(username),
+    [`${username}-blogs`],
+    {
+      revalidate: 60,
+      tags: ["blogs"],
+    },
+  );
+  return getCachedBlogs();
+};
