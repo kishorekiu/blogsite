@@ -2,10 +2,8 @@ import { getBlogBySlug } from "@/app/actions/getBlogs";
 import SignleBlog from "@/components/blog/SingleBlog";
 import BackButton from "@/components/ui/BackButton";
 import { getDataFromToken } from "@/lib/auth";
-import { IUser } from "@/models/User";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import React from "react";
 
 const BlogPage = async ({
   params,
