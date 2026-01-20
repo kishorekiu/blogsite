@@ -28,6 +28,7 @@ export interface FormProps {
     };
     feilds: FormDataFeilds[];
   };
+  loadingText?: string;
   showPassword?: boolean;
   setShowPassword?: React.Dispatch<React.SetStateAction<boolean>>;
   handleFormSubmit?: (inputs: any) => void;
@@ -45,6 +46,7 @@ const Form = (props: FormProps) => {
     setShowPassword,
     handleFormSubmit,
     isLoading,
+    loadingText,
   } = props;
 
   // Initialize state
@@ -146,6 +148,7 @@ const Form = (props: FormProps) => {
           ctaLabel={formData.cta}
           onClick={handleOnFormSubmit}
           optionalCta={formData.optionalCta}
+          loadingText={loadingText}
         />
       </div>
     </div>

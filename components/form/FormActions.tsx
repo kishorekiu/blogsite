@@ -9,6 +9,7 @@ interface FormActionsProps {
     label: string;
     href: string;
   };
+  loadingText?: string;
 }
 
 const FormActions = ({
@@ -16,6 +17,7 @@ const FormActions = ({
   ctaLabel,
   onClick,
   optionalCta,
+  loadingText,
 }: FormActionsProps) => {
   return (
     <div className="mt-4 flex justify-center items-center gap-4">
@@ -31,7 +33,7 @@ const FormActions = ({
           }
         `}
       >
-        {isLoading ? "Please wait..." : ctaLabel}
+        {isLoading ? loadingText || "Please wait..." : ctaLabel}
       </button>
 
       {optionalCta?.href && (

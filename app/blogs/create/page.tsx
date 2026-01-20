@@ -1,6 +1,8 @@
 "use client";
+import { checkContentSafetyAction } from "@/app/actions/aiActions";
 import { createBlogAction } from "@/app/actions/blogActions";
 import Form from "@/components/form/Form";
+import AiDisclaimer from "@/components/ui/AiDisclaimer";
 import BackButton from "@/components/ui/BackButton";
 import {
   BlogDraft,
@@ -8,17 +10,17 @@ import {
   saveTemBlog,
 } from "@/lib/features/blog/blogSlice";
 import { openSnackbar } from "@/lib/features/ui/snackbarSlice";
-import { useAppSelector } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 
 const page = () => {
   const tempBlogData = useAppSelector((state) => state?.blog?.tempBlogData);
   const isAuth = useAppSelector((state) => state.auth.isAuth);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [loadingText, setLoadingText] = useState("Please wait...");
   const [initialValues, setInitialValues] = useState<{
     title: string;
     description: string;
@@ -40,7 +42,24 @@ const page = () => {
   }, [isAuth]);
   const handleCreateBlog = async (inputs: BlogDraft) => {
     setLoading(true);
+    setLoadingText("AI Agent is Analyzing content...");
     try {
+      const safetyCheck = await checkContentSafetyAction(
+        inputs.title,
+        inputs.description,
+      );
+      console.log("AI Agent response handleCreateBlog: ", safetyCheck);
+
+      if (safetyCheck.success && safetyCheck.analysis.isSafe === false) {
+        dispatch(
+          openSnackbar({
+            message: `Blocked: ${safetyCheck.analysis.reason}`,
+            severity: "error",
+          }),
+        );
+        setLoading(false);
+        return;
+      }
       const result = await createBlogAction(inputs);
       // check Unauthorized
       if (result.error) {
@@ -60,6 +79,7 @@ const page = () => {
         return;
       }
       if (result.success) {
+        setLoadingText("Safe! Saving to Database...");
         // trigger Snackbar
         dispatch(
           openSnackbar({
@@ -69,7 +89,7 @@ const page = () => {
         );
         // clear any saved draft blog
         dispatch(clearTempBlog());
-        router.push("/");
+        router.push("/blogs");
       }
     } catch (e) {
       console.error(e);
@@ -118,7 +138,11 @@ const page = () => {
         formData={formData}
         handleFormSubmit={handleCreateBlog}
         isLoading={loading}
+        loadingText={loadingText}
       />
+      <div className="mt-2 flex justify-center">
+        <AiDisclaimer />
+      </div>
     </div>
   );
 };

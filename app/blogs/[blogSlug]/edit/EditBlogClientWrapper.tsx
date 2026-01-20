@@ -1,4 +1,5 @@
 "use client";
+import { checkContentSafetyAction } from "@/app/actions/aiActions";
 import { updateBlogAction } from "@/app/actions/blogActions";
 import Form, { FormDataFeilds } from "@/components/form/Form";
 import { openSnackbar } from "@/lib/features/ui/snackbarSlice";
@@ -22,6 +23,7 @@ const EditBlogClientWrapper = (props: EditBlogClientWrapperProps) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
+  const [loadingText, setLoadingText] = useState("Please wait...");
   const [apiResponse, setApiResponse] = useState({
     message: "",
     error: "",
@@ -47,7 +49,24 @@ const EditBlogClientWrapper = (props: EditBlogClientWrapperProps) => {
   }, [userId, authorId]);
   const handleSubmit = async (inputs: any) => {
     setLoading(true);
+    setLoadingText("AI Agent is Analyzing content...");
     try {
+      const safetyCheck = await checkContentSafetyAction(
+        inputs.title,
+        inputs.description,
+      );
+      console.log("AI Agent response", safetyCheck);
+
+      if (safetyCheck.success && safetyCheck.analysis.isSafe === false) {
+        dispatch(
+          openSnackbar({
+            message: `Blocked: ${safetyCheck.analysis.reason}`,
+            severity: "error",
+          }),
+        );
+        setLoading(false);
+        return;
+      }
       const res = await updateBlogAction(blogId, inputs);
       // @ts-ignore
       setApiResponse(res);
@@ -60,6 +79,7 @@ const EditBlogClientWrapper = (props: EditBlogClientWrapperProps) => {
         );
       }
       if (res.success) {
+        setLoadingText("Safe! Updating Blog...");
         dispatch(
           openSnackbar({
             message: "Blog Updated Successfully",
@@ -83,6 +103,7 @@ const EditBlogClientWrapper = (props: EditBlogClientWrapperProps) => {
       handleFormSubmit={handleSubmit}
       isLoading={loading}
       apiResponse={apiResponse}
+      loadingText={loadingText}
     />
   );
 };

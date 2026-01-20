@@ -3,6 +3,7 @@ import { getDataFromToken } from "@/lib/auth";
 import { notFound } from "next/navigation";
 import EditBlogClientWrapper from "./EditBlogClientWrapper";
 import BackButton from "@/components/ui/BackButton";
+import AiDisclaimer from "@/components/ui/AiDisclaimer";
 
 const EditBlogPage = async ({
   params,
@@ -59,6 +60,9 @@ const EditBlogPage = async ({
         userId={userId}
         authorId={blog?.author?._id}
       />
+      <div className="mt-2 flex justify-center">
+        <AiDisclaimer />
+      </div>
     </div>
   );
 };

@@ -1,7 +1,5 @@
 "use client";
-import React, { Suspense, useState } from "react";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { Suspense, useState } from "react";
 import Form from "@/components/form/Form";
 import { useAppDispatch } from "@/lib/hooks";
 import { login } from "@/lib/features/auth/authSlice";

@@ -1,13 +1,4 @@
-import SecondaryButton from "@/components/ui/SecondaryButtonLink";
-import { getBlogs } from "./actions/getBlogs";
-import Link from "next/link";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import Blogs from "@/components/blog/Blogs";
 import PageSectionHeader from "@/components/ui/PageSectionHeader";
-import { Suspense } from "react";
-import BlogListSkeleton from "@/components/skeletons/BlogSkeleton";
-import RecentBlogs from "@/components/blog/RecentBlogs";
 import InfoGrid from "@/components/ui/InfoGrid";
 
 const homeCardsData = [
