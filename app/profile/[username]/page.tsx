@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getBlogsByUsername } from "@/app/actions/getBlogs";
 import Blogs from "@/components/blog/Blogs";
 import { getDataFromToken } from "@/lib/auth";
+import BackButton from "@/components/ui/BackButton";
 
 interface ProfilePageProps {
   params: {
@@ -28,8 +29,9 @@ const ProfilePage = async ({ params }: ProfilePageProps) => {
 
   return (
     <div className="mt-8 max-w-4xl mx-auto px-4 sm:px-6">
+      <BackButton />
       {/* Header */}
-      <div className="mb-8 border-b dark:border-gray-800 pb-4">
+      <div className="mt-3 mb-8 border-b dark:border-gray-800 pb-4">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 capitalize">
           {username}&apos;s Blogs
         </h1>

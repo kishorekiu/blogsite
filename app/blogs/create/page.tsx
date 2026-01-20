@@ -1,6 +1,7 @@
 "use client";
 import { createBlogAction } from "@/app/actions/blogActions";
 import Form from "@/components/form/Form";
+import BackButton from "@/components/ui/BackButton";
 import {
   BlogDraft,
   clearTempBlog,
@@ -111,11 +112,14 @@ const page = () => {
     ],
   };
   return (
-    <Form
-      formData={formData}
-      handleFormSubmit={handleCreateBlog}
-      isLoading={loading}
-    />
+    <div className="mt-8 max-w-4xl mx-auto px-4 sm:px-6">
+      <BackButton />
+      <Form
+        formData={formData}
+        handleFormSubmit={handleCreateBlog}
+        isLoading={loading}
+      />
+    </div>
   );
 };
 

@@ -2,6 +2,7 @@ import { getBlogBySlug } from "@/app/actions/getBlogs";
 import { getDataFromToken } from "@/lib/auth";
 import { notFound } from "next/navigation";
 import EditBlogClientWrapper from "./EditBlogClientWrapper";
+import BackButton from "@/components/ui/BackButton";
 
 const EditBlogPage = async ({
   params,
@@ -49,13 +50,16 @@ const EditBlogPage = async ({
     ],
   };
   return (
-    <EditBlogClientWrapper
-      formData={editFormData}
-      blogId={blog?._id}
-      blogSlug={blogSlug}
-      userId={userId}
-      authorId={blog?.author?._id}
-    />
+    <div className="mt-8 max-w-4xl mx-auto px-4 sm:px-6">
+      <BackButton />
+      <EditBlogClientWrapper
+        formData={editFormData}
+        blogId={blog?._id}
+        blogSlug={blogSlug}
+        userId={userId}
+        authorId={blog?.author?._id}
+      />
+    </div>
   );
 };
 

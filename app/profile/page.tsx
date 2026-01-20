@@ -1,3 +1,4 @@
+import BackButton from "@/components/ui/BackButton";
 import { getDataFromToken } from "@/lib/auth";
 import Link from "next/link";
 import React from "react";
@@ -6,6 +7,7 @@ const page = async () => {
   const username = await getDataFromToken("username");
   return (
     <div className="flex flex-col justify-center items-center gap-2 mt-8 mb-4">
+      <BackButton />
       <p>
         User <span>{username}</span>{" "}
       </p>
