@@ -7,6 +7,7 @@ import StoreProvider from "@/app/StoreProvider";
 import { getDataFromToken } from "@/lib/auth";
 import RenderSnackbar from "@/components/ui/RenderSnackbar";
 import AuthNotifier from "@/components/utility/AuthNotifier";
+import Footer from "@/components/ui/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,13 +34,18 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable}
+          antialiased flex flex-col min-h-screen
+          bg-white dark:bg-gray-950 text-gray-900 dark:text-white
+          transition-colors duration-200
+        `}
       >
         <StoreProvider isAuth={isAuth}>
           <NavBar />
-          <div className="md:mx-16 lg:mx-44">{children}</div>
+          <main className="grow">{children}</main>
           <AuthNotifier />
           <RenderSnackbar />
+          <Footer />
         </StoreProvider>
       </body>
     </html>
